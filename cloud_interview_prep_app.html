@@ -1,0 +1,512 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{display:flex;min-height:600px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
+.sidebar{width:210px;min-width:210px;border-right:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);display:flex;flex-direction:column}
+.sb-head{padding:14px 16px 10px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sb-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.sb-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.nav-sec{padding:8px 0}
+.nav-lbl{font-size:10px;color:var(--color-text-tertiary);padding:4px 16px 2px;letter-spacing:.06em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);border-left:2px solid transparent}
+.nav-item:hover{background:var(--color-background-primary);color:var(--color-text-primary)}
+.nav-item.active{background:var(--color-background-primary);color:var(--color-text-primary);border-left-color:#378ADD;font-weight:500}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.content{flex:1;overflow-y:auto;padding:24px 26px}
+.page{display:none}
+.page.active{display:block}
+.ptitle{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.psub{font-size:13px;color:var(--color-text-tertiary);margin-bottom:18px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:12px}
+.ctitle{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+.cbody{font-size:13px;color:var(--color-text-secondary);line-height:1.65}
+pre{background:var(--color-background-tertiary);border-radius:var(--border-radius-md);padding:11px 13px;font-family:var(--font-mono);font-size:12px;color:var(--color-text-primary);line-height:1.7;margin:8px 0;white-space:pre-wrap}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;margin:2px 3px 2px 0}
+.b-blue{background:#E6F1FB;color:#0C447C}
+.b-green{background:#EAF3DE;color:#27500A}
+.b-amber{background:#FAEEDA;color:#633806}
+.b-purple{background:#EEEDFE;color:#3C3489}
+.b-teal{background:#E1F5EE;color:#085041}
+.b-coral{background:#FAECE7;color:#712B13}
+.qa-item{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px;overflow:hidden}
+.qa-q{padding:11px 14px;font-size:13px;font-weight:500;color:var(--color-text-primary);cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-secondary)}
+.qa-q:hover{background:var(--color-background-tertiary)}
+.qa-a{padding:11px 14px;font-size:13px;color:var(--color-text-secondary);line-height:1.65;border-top:0.5px solid var(--color-border-tertiary);display:none}
+.qa-a.open{display:block}
+.chev{font-size:10px;color:var(--color-text-tertiary);transition:transform .2s;display:inline-block}
+.chev.open{transform:rotate(180deg)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.cc{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px}
+.cc-cloud{font-size:12px;font-weight:500;margin-bottom:5px}
+.cc-body{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.rlabel{font-size:10px;color:var(--color-text-tertiary);margin:12px 0 5px;text-transform:uppercase;letter-spacing:.05em}
+.stat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;text-align:center}
+.stat-n{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.stat-l{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.pw{background:var(--color-background-secondary);border-radius:4px;height:5px;margin:5px 0 2px}
+.pb{height:5px;border-radius:4px;background:#378ADD}
+.abox{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:7px 11px;font-size:12px;color:var(--color-text-secondary);margin:3px 0;display:flex;align-items:center;gap:7px}
+.aarr{text-align:center;color:var(--color-text-tertiary);font-size:11px;margin:1px 0}
+.ask{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;margin-top:8px}
+.ask:hover{background:var(--color-background-secondary)}
+</style>
+
+<div class="app">
+<div class="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">Cloud Interview Prep</div>
+    <div class="sb-sub">DevOps · Architect · SRE · Platform</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">Start here</div>
+    <div class="nav-item active" onclick="show('home',this)"><div class="dot" style="background:#378ADD"></div>Home</div>
+    <div class="nav-item" onclick="show('fund',this)"><div class="dot" style="background:#888780"></div>Fundamentals</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">By cloud</div>
+    <div class="nav-item" onclick="show('azure',this)"><div class="dot" style="background:#185FA5"></div>Azure</div>
+    <div class="nav-item" onclick="show('aws',this)"><div class="dot" style="background:#854F0B"></div>AWS</div>
+    <div class="nav-item" onclick="show('gcp',this)"><div class="dot" style="background:#3B6D11"></div>GCP</div>
+    <div class="nav-item" onclick="show('compare',this)"><div class="dot" style="background:#534AB7"></div>Compare all 3</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">By role</div>
+    <div class="nav-item" onclick="show('devops',this)"><div class="dot" style="background:#0F6E56"></div>DevOps Engineer</div>
+    <div class="nav-item" onclick="show('arch',this)"><div class="dot" style="background:#185FA5"></div>Cloud Architect</div>
+    <div class="nav-item" onclick="show('sre',this)"><div class="dot" style="background:#993C1D"></div>SRE</div>
+    <div class="nav-item" onclick="show('platform',this)"><div class="dot" style="background:#534AB7"></div>Platform Eng</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">Practice</div>
+    <div class="nav-item" onclick="show('qa',this)"><div class="dot" style="background:#A32D2D"></div>Interview Q&A</div>
+    <div class="nav-item" onclick="show('patterns',this)"><div class="dot" style="background:#639922"></div>Architecture patterns</div>
+  </div>
+</div>
+
+<div class="content">
+
+<div class="page active" id="page-home">
+  <div class="ptitle">Welcome back</div>
+  <div class="psub">Your personal cloud interview study tracker</div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-n">9</div><div class="stat-l">Topics</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Roles</div></div>
+    <div class="stat"><div class="stat-n">3</div><div class="stat-l">Clouds</div></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">4-week study plan</div>
+    <div style="margin-top:6px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary)"><span>Week 1 — Fundamentals + primary cloud</span><span style="color:var(--color-text-tertiary)">Start here</span></div>
+      <div class="pw"><div class="pb" style="width:25%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);margin-top:7px"><span>Week 2 — App architectures + multi-cloud</span></div>
+      <div class="pw"><div class="pb" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);margin-top:7px"><span>Week 3 — Role deep dive</span></div>
+      <div class="pw"><div class="pb" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);margin-top:7px"><span>Week 4 — Mock interviews + architecture design</span></div>
+      <div class="pw"><div class="pb" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Target roles</div>
+    <div style="margin-top:6px">
+      <span class="badge b-teal">DevOps Engineer</span>
+      <span class="badge b-blue">Cloud Architect</span>
+      <span class="badge b-coral">SRE</span>
+      <span class="badge b-purple">Platform Engineer</span>
+    </div>
+  </div>
+  <button class="ask" onclick="sendPrompt('Give me a mock interview question for a DevOps Engineer cloud role')">Practice a mock interview question ↗</button>
+</div>
+
+<div class="page" id="page-fund">
+  <div class="ptitle">Cloud fundamentals</div>
+  <div class="psub">Core concepts every cloud engineer must know</div>
+  <div class="card">
+    <div class="ctitle">Service models</div>
+    <pre>IaaS  → you manage OS up        (VMs, networking)
+PaaS  → you manage app only     (App Service, RDS)
+SaaS  → you manage nothing      (Gmail, Office 365)
+
+Rule: more control = more responsibility</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">CIDR notation — memorize this</div>
+    <pre>/8   = 16 million IPs   (huge network)
+/16  = 65,536 IPs       (typical VNet/VPC)
+/24  = 256 IPs          (typical subnet)
+/32  = 1 IP             (single host)
+
+Smaller number = MORE IPs = BIGGER network</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Uptime SLA numbers</div>
+    <pre>99%     =  8.7 hours  downtime/year
+99.9%   = 52.6 minutes downtime/year
+99.95%  = 26  minutes  downtime/year
+99.99%  =  5.2 minutes downtime/year  (HA target)
+99.999% = 31  seconds  downtime/year  (five nines)</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">RTO vs RPO</div>
+    <div class="cbody"><b style="font-weight:500">RPO</b> — Recovery Point Objective: how much data can you lose?<br><b style="font-weight:500">RTO</b> — Recovery Time Objective: how long can the system be down?<br><br>Lower RPO/RTO = more expensive. Always define these before designing DR.</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Zero Trust principles</div>
+    <pre>Never trust, always verify — even internal traffic
+Identity  → MFA + Managed Identity for services
+Network   → private endpoints, WAF on public ingress
+Data      → encryption at rest (CMK) + in transit (TLS 1.2+)
+Access    → least privilege for every identity</pre>
+  </div>
+  <button class="ask" onclick="sendPrompt('Explain the Hub-Spoke network topology in Azure')">Ask about Hub-Spoke ↗</button>
+</div>
+
+<div class="page" id="page-azure">
+  <div class="ptitle">Azure</div>
+  <div class="psub">Key services, networking, and architecture patterns</div>
+  <div class="card">
+    <div class="ctitle">Load balancer — which one to use?</div>
+    <pre>Global traffic?      → Azure Front Door + WAF
+Regional L7 HTTP?    → Application Gateway v2
+Regional L4 TCP/UDP? → Azure Load Balancer
+DNS-based global?    → Traffic Manager</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Managed Identity — no passwords!</div>
+    <div class="cbody">Azure creates an identity for your App Service/VM automatically. It authenticates to Key Vault, SQL, Storage using this identity — zero passwords stored anywhere. Azure handles token issuance and rotation. This is the answer to "how do you handle secrets in Azure?"</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Hub-Spoke network topology</div>
+    <pre>Hub VNet: Firewall + Bastion + DNS (shared services)
+  ├── Spoke 1: App A  (VNet Peering to Hub)
+  ├── Spoke 2: App B  (VNet Peering to Hub)
+  └── Spoke 3: App C  (VNet Peering to Hub)
+
+All Spoke↔Spoke traffic routes via Hub Firewall</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Key Azure services quick ref</div>
+    <div style="margin-top:6px">
+      <span class="badge b-blue">VNet</span><span class="badge b-blue">NSG</span><span class="badge b-blue">App Gateway</span><span class="badge b-blue">Front Door</span><span class="badge b-blue">Private Link</span><span class="badge b-blue">ExpressRoute</span><span class="badge b-blue">Azure Firewall</span><span class="badge b-blue">Key Vault</span><span class="badge b-blue">AKS</span><span class="badge b-blue">Cosmos DB</span><span class="badge b-blue">APIM</span><span class="badge b-blue">Bastion</span>
+    </div>
+  </div>
+  <button class="ask" onclick="sendPrompt('What is the difference between Azure NSG and Azure Firewall?')">NSG vs Firewall ↗</button>
+</div>
+
+<div class="page" id="page-aws">
+  <div class="ptitle">AWS</div>
+  <div class="psub">VPC design, key services, and architecture patterns</div>
+  <div class="card">
+    <div class="ctitle">VPC subnet design</div>
+    <pre>PUBLIC subnet  → has route to Internet Gateway
+                 for: Load Balancers, NAT Gateway
+PRIVATE subnet → no internet route
+                 for: EC2, ECS (never expose app servers!)
+DB subnet      → private, only app tier can reach</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Security Groups vs NACLs</div>
+    <pre>Security Group → stateful, instance level, allow only
+NACL           → stateless, subnet level, allow + deny
+
+Use SGs for most cases.
+Use NACLs to block entire IP ranges at subnet level.</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">RDS Multi-AZ vs Read Replicas</div>
+    <div class="cbody"><b style="font-weight:500">Multi-AZ</b> — synchronous standby, auto-failover ~60s, for HIGH AVAILABILITY. Standby cannot serve reads.<br><br><b style="font-weight:500">Read Replicas</b> — async copy for READ PERFORMANCE. Up to 15 for Aurora. Can be cross-region.<br><br>Use BOTH together for HA + performance.</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">EC2 pricing models</div>
+    <pre>On-Demand    → pay per hour, no commitment (expensive)
+Reserved     → 1-3 year commit, save up to 72%
+Spot         → unused capacity, save up to 90%
+Savings Plan → flexible commitment (recommended)</pre>
+  </div>
+  <button class="ask" onclick="sendPrompt('Explain AWS Transit Gateway and when to use it over VPC peering')">Transit Gateway vs Peering ↗</button>
+</div>
+
+<div class="page" id="page-gcp">
+  <div class="ptitle">GCP</div>
+  <div class="psub">Global VPC, BigQuery, GKE — GCP's strengths</div>
+  <div class="card">
+    <div class="ctitle">GCP VPC is GLOBAL — key difference!</div>
+    <pre>AWS/Azure VPC: regional (one per region)
+GCP VPC:       global  (spans ALL regions!)
+
+Subnets are regional. Resources in different
+regions in the same VPC talk privately — no
+extra peering needed!</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Where GCP wins</div>
+    <div style="margin-top:6px">
+      <span class="badge b-green">Best Kubernetes — GKE (Google invented K8s)</span>
+      <span class="badge b-green">Best data warehouse — BigQuery (serverless)</span>
+      <span class="badge b-green">Global LB built-in (anycast, single IP)</span>
+      <span class="badge b-green">Cloud Spanner — global distributed SQL</span>
+      <span class="badge b-green">Cheapest preemptible VMs (91% off)</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">BigQuery in one paragraph</div>
+    <div class="cbody">Serverless data warehouse — no cluster to manage. Petabyte queries in seconds. Pay per TB scanned (on-demand). Run ML models using SQL (BQML). Columnar storage. GCP's biggest differentiator. Use partitioning + clustering to reduce data scanned and cut costs.</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Workload Identity in GKE</div>
+    <div class="cbody">K8s pods authenticate to GCP services without service account JSON key files. K8s service account is linked to a GCP service account. Pods get short-lived tokens automatically. No secrets stored in pods or config files.</div>
+  </div>
+  <button class="ask" onclick="sendPrompt('When would you choose GCP over AWS or Azure for a new project?')">When to choose GCP ↗</button>
+</div>
+
+<div class="page" id="page-compare">
+  <div class="ptitle">Compare all 3 clouds</div>
+  <div class="psub">Same service, three different names</div>
+  <div class="rlabel">Compute</div>
+  <div class="grid3">
+    <div class="cc"><div class="cc-cloud" style="color:#0C447C">Azure</div><div class="cc-body">Virtual Machines<br>VM Scale Sets<br>AKS<br>Container Apps<br>Azure Functions</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#854F0B">AWS</div><div class="cc-body">EC2<br>Auto Scaling Group<br>EKS<br>Fargate<br>Lambda</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#27500A">GCP</div><div class="cc-body">Compute Engine<br>Managed Instance Group<br>GKE<br>Cloud Run<br>Cloud Functions</div></div>
+  </div>
+  <div class="rlabel">Networking</div>
+  <div class="grid3">
+    <div class="cc"><div class="cc-cloud" style="color:#0C447C">Azure</div><div class="cc-body">VNet (regional)<br>NSG<br>App Gateway<br>Front Door<br>ExpressRoute<br>Private Link</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#854F0B">AWS</div><div class="cc-body">VPC (regional)<br>Security Groups<br>ALB<br>CloudFront<br>Direct Connect<br>PrivateLink</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#27500A">GCP</div><div class="cc-body">VPC (GLOBAL)<br>Firewall Rules<br>Cloud LB<br>Cloud CDN<br>Cloud Interconnect<br>Private Service Connect</div></div>
+  </div>
+  <div class="rlabel">Database</div>
+  <div class="grid3">
+    <div class="cc"><div class="cc-cloud" style="color:#0C447C">Azure</div><div class="cc-body">Azure SQL<br>Cosmos DB<br>Azure Redis<br>Synapse</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#854F0B">AWS</div><div class="cc-body">RDS / Aurora<br>DynamoDB<br>ElastiCache<br>Redshift</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#27500A">GCP</div><div class="cc-body">Cloud SQL / AlloyDB<br>Firestore / Bigtable<br>Memorystore<br>BigQuery</div></div>
+  </div>
+  <div class="rlabel">Security</div>
+  <div class="grid3">
+    <div class="cc"><div class="cc-cloud" style="color:#0C447C">Azure</div><div class="cc-body">Entra ID (AAD)<br>Key Vault<br>Defender for Cloud<br>Sentinel SIEM</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#854F0B">AWS</div><div class="cc-body">IAM + Cognito<br>KMS + Secrets Mgr<br>Security Hub<br>GuardDuty</div></div>
+    <div class="cc"><div class="cc-cloud" style="color:#27500A">GCP</div><div class="cc-body">Cloud IAM<br>Cloud KMS + Secret Mgr<br>Security Command Center<br>Chronicle SIEM</div></div>
+  </div>
+  <button class="ask" onclick="sendPrompt('What are the main networking differences between Azure and AWS?')">Ask networking differences ↗</button>
+</div>
+
+<div class="page" id="page-devops">
+  <div class="ptitle">DevOps Engineer</div>
+  <div class="psub">CI/CD, IaC, containers, GitOps</div>
+  <div class="card">
+    <div class="ctitle">CI/CD pipeline stages</div>
+    <pre>1. git push → pipeline triggers
+2. Build: compile + unit tests + Docker image
+3. Scan: Trivy (container) + SAST + OWASP ZAP
+4. Deploy staging → integration tests
+5. Manual approval (optional gate)
+6. Deploy prod → Blue/Green or Canary
+7. Health check → auto-rollback if fail</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Deployment strategies</div>
+    <div class="cbody"><b style="font-weight:500">Blue/Green</b> — two environments, instant traffic switch, instant rollback. Double cost during cutover.<br><br><b style="font-weight:500">Canary</b> — 5% → 20% → 50% → 100%. Monitor error rate at each step. Best for risky changes.<br><br><b style="font-weight:500">Rolling</b> — update pods one by one. No extra infra. Both versions briefly co-exist.</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Terraform workflow</div>
+    <pre>terraform init     → download providers
+terraform plan     → preview changes (review this!)
+terraform apply    → create/update resources
+terraform destroy  → delete all
+
+State: store in Azure Blob / S3 / GCS
+Locking: prevents two people applying at once</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">GitOps with ArgoCD</div>
+    <pre>Git repo (K8s manifests)
+  → ArgoCD watches for changes
+  → detects drift between Git and cluster
+  → auto-syncs cluster to match Git
+
+No manual kubectl in prod. Changes via PRs.
+Audit trail = Git history. Rollback = git revert.</pre>
+  </div>
+  <button class="ask" onclick="sendPrompt('How do you handle secrets securely in a Kubernetes CI/CD pipeline?')">Ask about secrets in CI/CD ↗</button>
+</div>
+
+<div class="page" id="page-arch">
+  <div class="ptitle">Cloud Architect</div>
+  <div class="psub">HA design, migration, security, cost</div>
+  <div class="card">
+    <div class="ctitle">HA design checklist</div>
+    <div class="cbody">No single points of failure at every tier. Multi-AZ compute with auto-scaling. Multi-AZ database with auto-failover. Load balancer with health checks. Graceful degradation — serve cached data if DB is slow. Circuit breakers between services.</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Migration — 6 Rs framework</div>
+    <pre>Rehost     → lift-and-shift VMs as-is (fastest)
+Replatform → swap in managed services (RDS, K8s)
+Repurchase → move to SaaS (Salesforce, etc)
+Refactor   → redesign as microservices/serverless
+Retain     → keep on-prem (not ready to migrate)
+Retire     → decommission (no longer needed)</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Cost optimization levers</div>
+    <pre>Right-size    → monitor CPU/RAM, downsize over-provisioned
+Reserved      → 1-3 yr commit for baseline (save 40-70%)
+Spot/Preempt  → for dev/test, batch jobs (save 60-90%)
+Auto-scale    → scale down nights and weekends
+Storage tiers → lifecycle policies for old data
+Tag everything → cost allocation per team/product</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">DR strategies by cost</div>
+    <pre>Backup/Restore  → cheapest, hours RTO
+Pilot Light     → core services on, scale up on DR
+Warm Standby    → scaled-down copy always running
+Active/Active   → full capacity both regions, instant</pre>
+  </div>
+  <button class="ask" onclick="sendPrompt('Design a highly available payment processing system on Azure for a FinTech company')">Design a payment system ↗</button>
+</div>
+
+<div class="page" id="page-sre">
+  <div class="ptitle">Site Reliability Engineer</div>
+  <div class="psub">SLIs, SLOs, error budgets, incident response</div>
+  <div class="card">
+    <div class="ctitle">SLI → SLO → SLA → Error Budget</div>
+    <pre>SLI  = measurement   (99.95% requests succeed)
+SLO  = target        (99.9% per month — internal)
+SLA  = contract      (99.5% — always below SLO)
+Error Budget = 100% - SLO = 0.1% = 43 min/month
+
+High budget → move fast, ship features
+Low budget  → slow down, fix reliability first</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">4 Golden Signals — monitor these always</div>
+    <pre>1. Latency    → how long requests take (track p99!)
+2. Traffic    → requests per second
+3. Errors     → rate of failed requests (HTTP 5xx)
+4. Saturation → CPU %, memory %, queue depth</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Incident response flow</div>
+    <div class="cbody">Detect → Acknowledge → Assess severity → Notify stakeholders → <b style="font-weight:500">Mitigate first</b> (restore service, root cause later) → Investigate → Post-mortem within 48hr (blameless, 5 Whys, action items with owners).</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Toil — what it is and how to reduce it</div>
+    <div class="cbody">Toil = manual, repetitive, automatable work with no lasting value. Examples: manually restarting services, manual scaling before events, responding to noisy alerts.<br><br>Reduce by: self-healing (liveness probes), auto-scaling, automated runbooks. Target: toil below 50% of SRE time.</div>
+  </div>
+  <button class="ask" onclick="sendPrompt('What is Chaos Engineering and how do you run chaos experiments safely?')">Ask about Chaos Engineering ↗</button>
+</div>
+
+<div class="page" id="page-platform">
+  <div class="ptitle">Platform Engineering</div>
+  <div class="psub">Internal platforms, golden paths, developer experience</div>
+  <div class="card">
+    <div class="ctitle">Platform vs DevOps vs SRE</div>
+    <pre>DevOps Engineer   → embedded in product team
+                    builds CI/CD for THAT team's product
+SRE               → focuses on reliability, SLOs, incidents
+Platform Engineer → builds tools FOR other engineers
+                    internal customers = other dev teams
+                    reduces toil for ALL teams at once</pre>
+  </div>
+  <div class="card">
+    <div class="ctitle">Internal Developer Platform (IDP)</div>
+    <div class="cbody">Without IDP: open Jira ticket → wait 2 weeks for infra team.<br>With IDP: run one command → environment ready in 10 minutes.<br><br>Key tools: <b style="font-weight:500">Backstage</b> (service catalog + templates), <b style="font-weight:500">Crossplane</b> (K8s-native infra), <b style="font-weight:500">ArgoCD</b> (GitOps deployment)</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">K8s platform must-haves</div>
+    <div style="margin-top:6px">
+      <span class="badge b-blue">NGINX Ingress</span><span class="badge b-blue">cert-manager</span><span class="badge b-purple">External Secrets Op</span><span class="badge b-purple">OPA Gatekeeper</span><span class="badge b-teal">Prometheus</span><span class="badge b-teal">Grafana</span><span class="badge b-green">ArgoCD</span><span class="badge b-green">KEDA</span><span class="badge b-amber">Falco</span><span class="badge b-coral">Istio</span>
+    </div>
+  </div>
+  <button class="ask" onclick="sendPrompt('What is Crossplane and how does it work for platform engineering?')">Ask about Crossplane ↗</button>
+</div>
+
+<div class="page" id="page-qa">
+  <div class="ptitle">Interview Q&A</div>
+  <div class="psub">Click any question to reveal the answer</div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">What is the difference between NSG and Azure Firewall? <span class="chev">▼</span></div><div class="qa-a">NSG = simple allow/deny rules at subnet or NIC level, free, stateful. Azure Firewall = fully managed, FQDN filtering, IDPS, TLS inspection, centralized, costs money. Use BOTH: NSG for per-subnet micro-segmentation, Firewall for centralized east-west traffic control.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">What is a Private Endpoint and why use it? <span class="chev">▼</span></div><div class="qa-a">A Private Endpoint gives a PaaS service (Azure SQL, Blob Storage) a private IP inside your VNet. Traffic never leaves Microsoft's network. Prevents data exfiltration. The service becomes accessible only from inside your VNet — no public internet path exists at all.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">What is an SLO and how do you set one? <span class="chev">▼</span></div><div class="qa-a">SLO = Service Level Objective, your internal reliability target. To set one: look at historical data, understand what customers need, set SLO slightly below what you've historically achieved to give room. Example: historically 99.95% → set SLO at 99.9%. Review and adjust quarterly.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">What is GitOps? <span class="chev">▼</span></div><div class="qa-a">GitOps = Git is the single source of truth for all infrastructure and app config. An operator (ArgoCD / Flux) continuously syncs the live cluster state to match what's in Git. Changes go via PRs — no manual kubectl in production. Audit trail in Git history, rollback via git revert.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">RDS Multi-AZ vs Read Replicas — what's the difference? <span class="chev">▼</span></div><div class="qa-a">Multi-AZ = synchronous standby in another AZ, automatic failover in ~60 seconds, for HIGH AVAILABILITY. The standby cannot serve read traffic. Read Replicas = async copy for READ PERFORMANCE, up to 15 replicas for Aurora. Use both together for HA + read performance.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">How do you do zero-downtime deployments? <span class="chev">▼</span></div><div class="qa-a">Blue/Green: two identical environments, instant traffic switch, instant rollback — double cost during cutover. Canary: route 5% to new version, monitor metrics, increase gradually. Rolling (K8s default): update pods one by one with readiness probes ensuring health before routing traffic.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">What is Managed Identity in Azure? <span class="chev">▼</span></div><div class="qa-a">Azure creates an Azure AD identity for your resource (App Service, VM, AKS pod). The app authenticates to Key Vault, SQL, Storage using this identity — no passwords stored anywhere. Azure handles token issuance and automatic rotation. This eliminates stored credentials entirely.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">How does GCP VPC differ from AWS VPC? <span class="chev">▼</span></div><div class="qa-a">GCP VPC is global — one VPC spans all regions, subnets are regional. AWS VPC is regional — separate VPCs per region, need Transit Gateway or peering for multi-region. GCP is simpler for global apps: resources in different regions in the same VPC communicate privately without any extra config.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">What is Platform Engineering vs DevOps? <span class="chev">▼</span></div><div class="qa-a">DevOps engineer is embedded in a product team, builds CI/CD for that specific product. Platform Engineer builds internal tools and platforms that all engineering teams use. Platform team's customers are other developers. They create self-service infra, golden paths, and templates — reducing toil for every team simultaneously.</div></div>
+  <div class="qa-item"><div class="qa-q" onclick="tq(this)">How do you handle secrets in Kubernetes? <span class="chev">▼</span></div><div class="qa-a">Never store raw secrets in Git. Use External Secrets Operator to sync from Key Vault / Secrets Manager / Vault into K8s Secrets automatically. Use Workload Identity / IRSA so pods authenticate without stored credentials. Rotate secrets in the central store — ESO syncs the rotation automatically.</div></div>
+  <button class="ask" onclick="sendPrompt('Give me 3 tough cloud architect interview questions with model answers')">Get more questions ↗</button>
+</div>
+
+<div class="page" id="page-patterns">
+  <div class="ptitle">Architecture patterns</div>
+  <div class="psub">The 4 patterns interviewers love asking about</div>
+  <div class="card">
+    <div class="ctitle">3-Tier Web App</div>
+    <div class="abox" style="border-color:#E24B4A;color:#A32D2D">DDoS Protection + WAF (global edge)</div>
+    <div class="aarr">▼</div>
+    <div class="abox" style="border-color:#BA7517;color:#633806">Global LB — Front Door / CloudFront / Cloud LB</div>
+    <div class="aarr">▼</div>
+    <div class="abox" style="border-color:#BA7517;color:#633806">Regional L7 LB — App Gateway / ALB / Cloud LB</div>
+    <div class="aarr">▼</div>
+    <div class="abox" style="border-color:#185FA5;color:#0C447C">Web Tier — App Service / EC2 / Cloud Run (private subnet)</div>
+    <div class="aarr">▼</div>
+    <div class="abox" style="border-color:#185FA5;color:#0C447C">App Tier — APIs + APIM (no internet access)</div>
+    <div class="aarr">▼</div>
+    <div class="abox" style="border-color:#3B6D11;color:#27500A">Data Tier — SQL + Cache + Blob (Private Endpoint only)</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Microservices / Kubernetes</div>
+    <div class="abox" style="border-color:#534AB7;color:#3C3489">Container Registry — push image → scan → deploy via ArgoCD</div>
+    <div class="aarr">▼ GitOps sync</div>
+    <div class="abox" style="border-color:#534AB7;color:#3C3489">K8s Cluster (AKS / EKS / GKE) — private API server</div>
+    <div class="aarr">▼ Istio mTLS between all pods</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin:3px 0">
+      <div class="abox" style="border-color:#0F6E56;color:#085041;font-size:11px;padding:5px 8px">Payment Svc</div>
+      <div class="abox" style="border-color:#0F6E56;color:#085041;font-size:11px;padding:5px 8px">Auth Svc</div>
+      <div class="abox" style="border-color:#0F6E56;color:#085041;font-size:11px;padding:5px 8px">Notify Svc</div>
+    </div>
+    <div class="aarr">▼</div>
+    <div class="abox" style="border-color:#BA7517;color:#633806">Service Bus / SQS / Pub-Sub — async event messaging</div>
+    <div class="aarr">▼</div>
+    <div class="abox" style="border-color:#3B6D11;color:#27500A">Cosmos DB / DynamoDB / Firestore (Private EP)</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Hybrid — on-prem + cloud</div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin:4px 0">
+      <div class="abox" style="border-color:#5F5E5A;color:#444441;font-size:11px;padding:6px 8px">On-prem DC<br>Core Banking<br>Mainframe</div>
+      <div style="font-size:11px;color:var(--color-text-tertiary);text-align:center;white-space:nowrap">ExpressRoute<br>/ Direct Connect</div>
+      <div class="abox" style="border-color:#0F6E56;color:#085041;font-size:11px;padding:6px 8px">Hub VNet<br>Firewall + Bastion<br>Private DNS</div>
+    </div>
+    <div class="aarr">▼ VNet Peering</div>
+    <div class="abox" style="border-color:#185FA5;color:#0C447C">Spoke VNet — APIM + APIs + Managed DB</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Multi-Region Active/Active HA</div>
+    <div class="abox" style="border-color:#534AB7;color:#3C3489">Traffic Manager / Route 53 — DNS failover routing</div>
+    <div class="aarr">▼</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:3px 0">
+      <div class="abox" style="border-color:#3B6D11;color:#27500A;font-size:11px;padding:6px 8px">Primary Region<br>App (3 AZs)<br>DB Primary (writes)</div>
+      <div class="abox" style="border-color:#185FA5;color:#0C447C;font-size:11px;padding:6px 8px">Secondary Region<br>App (3 AZs)<br>DB Replica (~5s RPO)</div>
+    </div>
+    <div style="font-size:11px;color:var(--color-text-tertiary);text-align:center;margin-top:6px">Auto-failover on primary failure · RTO &lt; 1 hour</div>
+  </div>
+  <button class="ask" onclick="sendPrompt('Design a serverless event-driven architecture for a FinTech payment notification system on AWS')">Design a serverless architecture ↗</button>
+</div>
+
+</div>
+</div>
+
+<script>
+function show(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function tq(el){
+  const a=el.nextElementSibling;
+  const c=el.querySelector('.chev');
+  const o=a.classList.toggle('open');
+  c.classList.toggle('open',o);
+}
+</script>
